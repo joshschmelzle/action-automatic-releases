@@ -586,8 +586,15 @@ module.exports = (function (e) {
                 if (["false", "False", "FALSE"].includes(r)) return !1;
                 throw new TypeError(`Input does not meet YAML 1.2 "Core Schema" specification: ${e}\nSupport boolean input list: \`true | True | TRUE | false | False | FALSE\``);
             }),
+            // (t.setOutput = function (e, t) {
+            //     process.stdout.write(p.EOL), a.issueCommand("set-output", { name: e }, t);
+            // }),
             (t.setOutput = function (e, t) {
-                process.stdout.write(p.EOL), a.issueCommand("set-output", { name: e }, t);
+                const fs = require('fs');
+                const outputPath = process.env.GITHUB_OUTPUT;
+                if (outputPath) {
+                    fs.appendFileSync(outputPath, `${e}=${t}${require('os').EOL}`);
+                }
             }),
             (t.setCommandEcho = function (e) {
                 a.issue("echo", e ? "on" : "off");
